@@ -14,6 +14,8 @@ import url from 'js/api'
  * 给二级列表tab添加getSubData()click事件，传入（当前索引index，当前列表id）
  * 在获取二级列表时时需要当前列表的id参数的，才能获取当前列表对应的数据
  * 使用过滤器是的价格保留两位小数点
+ * 根级数据使用null时为了区分3中状态：null、有数据、空数据，例如购物车，初始状态是data===null，有数据是dat&&data.length,空数据是data&&!data.length
+ * 根级数据类型根据这个数据实际要使用的类型设定，如果是对象就设为null，字符串设为'',数组就设为[]，整数可以设置0或者其他数字
  */
 
 new Vue({
@@ -42,8 +44,8 @@ new Vue({
       })
     },
     getSubData(index,id) {
-      this.topIndex = index
-      if (index === 0) {
+      this.topIndex = index//实现一级列表tab切换样式
+      if (index === 0) {//实现一级列表数据获取
         this.getRankData()
       } else {
         axios.post(url.subList, {
