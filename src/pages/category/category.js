@@ -64,7 +64,7 @@ new Vue({
       })
     },
     toSearch(list) {//在分类页每个li添加click元素，使用js控制url
-      location.href = `search.html?keywords=${list.name}&id=${list.id}`
+      location.href = `search.html?keyword=${list.name}&id=${list.id}`
     }
   },
   mixins: [mixin]
