@@ -2,8 +2,9 @@ import './category.css'
 import 'css/common.css'
 import Vue from 'vue'
 import axios from 'axios'
-import Foot from '@/components/Foot'
 import url from 'js/api'
+import mixin from 'js/mixin.js'
+
 /*
  * 模板页面有两套二级列表，一个是综合排行的，另一个是其他二级列表类型，因为连个页面排版不同，使用v-if来判断页面加载哪个
  * 如果v-if="topIndex===0&&rankData",如果当前的一级列表的索引是0并且rankData已经拿到数据，就渲染综合排行
@@ -25,12 +26,10 @@ new Vue({
       topLists: null,
       subData: null,
       topIndex: 0,
-      rankData: null
+      rankData: null,
     }
   },
-  components: {
-    Foot
-  },
+
   created() {
     this.getTopLists()
     this.getSubData(0)
@@ -63,11 +62,11 @@ new Vue({
       }).catch((error) => {
         console.log(error)
       })
+    },
+    toSearch(list) {//在分类页每个li添加click元素，使用js控制url
+      location.href = `search.html?keywords=${list.name}&id=${list.id}`
     }
   },
-  filters: {
-    twoDecimal(price) {
-      return price.toFixed(2)
-    }
-  }
+  mixins: [mixin]
+
 })

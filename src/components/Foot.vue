@@ -1,16 +1,59 @@
 <template>
   <div class="bottom-nav">
     <ul>
-      <li><a href="https://maijia.youzan.com/mars/homepage"><i class="icon-home"></i><div>有赞</div></a></li>
-      <li><a href="https://maijia.youzan.com/mars/category"><i class="icon-category"></i><div>分类</div></a></li>
-      <li><a href="https://h5.youzan.com/v2/trade/cart?f_platform=yzapp&amp;source=yzapp"><i class="icon-cart"></i><div>购物车</div></a></li>
-      <li><a href="https://h5.youzan.com/v2/buyer/member"><i class="icon-user"></i><div>我</div></a></li>
+      <li 
+      :class="{active:index === currentIndex}" 
+      v-for="(list,index) in navConfig" 
+      :key="index"
+      @click="changeNav(list,index)">
+        <a> 
+          <i :class="list.icon"></i>
+          <div>{{list.name}}</div>
+        </a>
+      </li>
     </ul>
   </div> 
 </template>
 
 <script>
-  
+/**
+ * 配置navConfig来使用切换
+ * 使用js控制url，就要把a标签的href属性删除，否则会冲突
+ * 使用qs模块把location.search解析为对象，前提要去掉问号
+ * 要给currentIndex一个默认值，使用或运算符
+ */
+import qs from 'qs'
+  let navConfig = [{
+    name: '有赞',
+    href: 'index.html',
+    icon: 'icon-home'
+  },{
+    name: '分类',
+    href: 'category.html',
+    icon: 'icon-category'
+  },{
+    name: '购物车',
+    href: 'cart.html',
+    icon: 'icon-cart'
+  },{
+    name: '我',
+    href: 'member.html',
+    icon: 'icon-user'
+  }]
+  export default {
+    name: 'Foot',
+    data () {
+      return {
+        navConfig,
+        currentIndex: parseInt(qs.parse(location.search.substr(1)).index) || 0
+      }
+    },
+    methods: {
+      changeNav(list,index) {
+        location.href = `${list.href}?index=${index}`
+      }
+    }
+  }
 </script>
 
 <style>
