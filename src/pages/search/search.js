@@ -74,6 +74,7 @@ new Vue({
         duration: 1000
       })
       document.documentElement.scrollTop = 0
+      this.isShow = false
     }
   },
   mixins: [mixin]
