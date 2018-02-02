@@ -11,7 +11,9 @@ import {
 } from 'mint-ui';
 Vue.use(InfiniteScroll);
 
-
+/**
+ * http://jsrun.net/5iYKp/edit?utm_source=website   节流参照的这个地址代码，表示看不懂
+ */
 (function () {
   window.infiniteScroll = function(selector, cb, options) {
       if(!selector || !cb || !document.querySelector(selector)){
