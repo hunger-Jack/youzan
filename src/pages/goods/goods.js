@@ -34,7 +34,7 @@ new Vue({
     getDetails() {
       axios.post(url.details, {
         id
-      }).then((res) => {
+      }).then((res) => {//进行数据改造，拿到的数据时字符串数组，轮播组件需要的是对象数组
         this.details = res.data.data
         res.data.data.imgs.forEach(item => {
           this.bannerLists.push({
