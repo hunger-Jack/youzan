@@ -20,7 +20,8 @@ new Vue({
             details: null,
             changeTabs,
             curIndex: 0,
-            dealLists: null
+            dealLists: null,
+            loading: false
         }
     },
     methods: {
@@ -32,11 +33,14 @@ new Vue({
         changeTab(index) {
             this.curIndex = index
             if(this.curIndex === 1) {
+                this.dealLists = null
                 this.getDealLists()
             }
         },
         getDealLists() {
+            this.loading = true
             axios.post(url.deal,{id}).then((res) => {
+                this.loading = false
                 this.dealLists = res.data.data.lists
             })
         }

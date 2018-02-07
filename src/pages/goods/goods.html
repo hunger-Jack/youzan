@@ -17,7 +17,7 @@
 
 <body class=" body-fixed-bottom
             default-theme">
-  <div id="app">
+  <div id="app" v-if="details">
     <div class="container wap-goods internal-purchase" style="min-height: 617px;">
       <div class="content no-sidebar">
         <div class="content-body">
@@ -138,6 +138,7 @@
                         <span class="col-2 c-gray-dark center">{{list.time}}</span>
                         <span class="col-3 c-gray-darker center">{{list.num}}</span>
                       </div>
+                      <div class="loading-more" v-show="loading"><span></span></div>
                     </div>
                   </div>
                 </div>
