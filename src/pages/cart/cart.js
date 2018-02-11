@@ -26,7 +26,7 @@ new Vue({
                         good.checked = true
                     })
                 });
-                this.cartLists = lists
+                this.cartLists = lists //这样的花就不要Object.assign()了
             })
         },
         selectGood(good) {
