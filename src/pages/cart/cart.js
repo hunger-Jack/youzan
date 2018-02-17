@@ -10,7 +10,8 @@ new Vue({
   el: '.container',
   data() {
     return {
-      cartLists: null
+      cartLists: null,
+      total: 0
     }
   },
   computed: {
@@ -31,6 +32,22 @@ new Vue({
             })
         })
       }
+    },
+    selectedGoods() {
+        let arr = []
+        let total = 0
+        if(this.cartLists&&this.cartLists.length) {
+            this.cartLists.forEach(shop=>{
+                shop.goodsList.forEach(good=>{
+                    if(good.checked) {
+                        arr.push(good)
+                        total += good.price*good.number
+                    }
+                })
+            })
+        }
+        this.total = total
+        return arr
     }
   },
   methods: {

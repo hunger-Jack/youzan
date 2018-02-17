@@ -120,11 +120,11 @@
               </div>
               <!-- 显示状态 -->
               <div class="total-price" >
-                合计：¥<span class="js-total-price" style="color: rgb(255, 102, 0);">684.99</span>
+                合计：¥<span class="js-total-price" style="color: rgb(255, 102, 0);">{{total | twoDecimal}}</span>
                 <p class="c-gray-dark">不含运费</p>
               </div>
-              <button href="javascript:;" class="js-go-pay btn btn-orange-dark font-size-14" >
-                结算 (3)
+              <button href="javascript:;" class="js-go-pay btn btn-orange-dark font-size-14" :disabled="!selectedGoods.length">
+                结算 ({{selectedGoods.length}})
               </button>
               <!-- 编辑状态 -->
               <button href="javascript:;" disabled="disabled" class="j-delete-goods btn font-size-14 btn-red" style="display: none;">删除
