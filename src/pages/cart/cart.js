@@ -33,7 +33,7 @@ new Vue({
         })
       }
     },
-    selectedGoods() {
+    selectedGoods() {//结算状态和对应操作，根据选中商品长度计算。
         let arr = []
         let total = 0
         if(this.cartLists&&this.cartLists.length) {
