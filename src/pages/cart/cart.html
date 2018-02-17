@@ -30,15 +30,17 @@
             <div class="block block-order block-cart" v-for="(shop,shopIndex) in cartLists">
               <div class="header">
                 <div class="select-group js-select-group" @click="selectShop(shop)"><span class="check" :class="{checked:shop.checked}"></span></div> <a class="shop-title"><i class="custom-store-img">店铺：</i>{{shop.shopTitle}}</a>
-                <a href="javascript:;" data-type="cart" class="j-edit-list pull-right c-blue font-size-12 edit-list">
+                <a href="javascript:;" data-type="cart" class="j-edit-list pull-right c-blue font-size-12 edit-list"
+                  @click="edit(shop,shopIndex)"
+                >
                   <!---->
-                  编辑
+                  {{shop.editingMsg}}
                 </a>
               </div>
               <!---->
               <div>
                 <ul class="js-list block block-list block-list-cart border-0">
-                  <li class="block-item block-item-cart" v-for="(good,index) in shop.goodsList">
+                  <li class="block-item block-item-cart" v-for="(good,index) in shop.goodsList" :class="{editing:shop.isEditing}">
                     <div>
                       <div class="check-container" ><span class="check" :class="{checked:good.checked}" @click="selectGood(shop,good)"></span></div>
                       <div class="name-card clearfix">
@@ -50,12 +52,12 @@
                             {{good.sku}}
                           </p>
                           <!-- 显示状态 -->
-                          <div class="num">
+                          <div class="num" v-show="!shop.isEditing">
                             ×<span class="num-txt">{{good.number}}</span>
                             <!---->
                           </div>
                           <!-- 编辑状态 -->
-                          <div class="num" style="display: none;">
+                          <div class="num" v-show="shop.isEditing">
                             <!---->
                             <div class="quantity">
                               <button type="button" class="minus disabled"></button>
@@ -127,7 +129,7 @@
                 结算 ({{selectedGoods.length}})
               </button>
               <!-- 编辑状态 -->
-              <button href="javascript:;" disabled="disabled" class="j-delete-goods btn font-size-14 btn-red" style="display: none;">删除
+              <button href="javascript:;" disabled="disabled" class="j-delete-goods btn font-size-14 btn-red" v-show="editingShop">删除
                     </button>
             </div>
           </div>

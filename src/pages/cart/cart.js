@@ -11,43 +11,44 @@ new Vue({
   data() {
     return {
       cartLists: null,
-      total: 0
+      total: 0,
+      editingShop: null
     }
   },
   computed: {
-    AllSelected: {//使用计算属性实现最下方的全选功能
+    AllSelected: { //使用计算属性实现最下方的全选功能
       get() {
-        if(this.cartLists&&this.cartLists.length) {
-            return this.cartLists.every(shop=>{//使用every的api实现，如果所有的商品被选中，左下方的全选自动选中，如果有一个商品没有选中，全选就不选中。
-                return shop.checked
-            })
+        if (this.cartLists && this.cartLists.length) {
+          return this.cartLists.every(shop => { //使用every的api实现，如果所有的商品被选中，左下方的全选自动选中，如果有一个商品没有选中，全选就不选中。
+            return shop.checked
+          })
         }
         return false
       },
-      set(newVal) {//使购物车所有商品被选中和不被选中。
-        this.cartLists.forEach(shop=>{
-            shop.checked = newVal
-            shop.goodsList.forEach(good=>{
-                good.checked = newVal
-            })
+      set(newVal) { //使购物车所有商品被选中和不被选中。
+        this.cartLists.forEach(shop => {
+          shop.checked = newVal
+          shop.goodsList.forEach(good => {
+            good.checked = newVal
+          })
         })
       }
     },
-    selectedGoods() {//结算状态和对应操作，根据选中商品长度计算。
-        let arr = []
-        let total = 0
-        if(this.cartLists&&this.cartLists.length) {
-            this.cartLists.forEach(shop=>{
-                shop.goodsList.forEach(good=>{
-                    if(good.checked) {
-                        arr.push(good)
-                        total += good.price*good.number
-                    }
-                })
-            })
-        }
-        this.total = total
-        return arr
+    selectedGoods() { //结算状态和对应操作，根据选中商品长度计算。
+      let arr = []
+      let total = 0
+      if (this.cartLists && this.cartLists.length) {
+        this.cartLists.forEach(shop => {
+          shop.goodsList.forEach(good => {
+            if (good.checked) {
+              arr.push(good)
+              total += good.price * good.number
+            }
+          })
+        })
+      }
+      this.total = total
+      return arr
     }
   },
   methods: {
@@ -56,6 +57,8 @@ new Vue({
         let lists = res.data.cartList
         lists.forEach(shop => {
           shop.checked = true
+          shop.editingMsg = '编辑' //文字信息‘编辑’或者'完成'，默认给‘编辑’
+          shop.isEditing = false //是否在编辑状态，默认否
           shop.goodsList.forEach(good => {
             good.checked = true
           })
@@ -65,18 +68,29 @@ new Vue({
     },
     selectGood(shop, good) {
       good.checked = !good.checked
-      shop.checked = shop.goodsList.every(good => {//使用every的api实现如果全部商品被选择，店铺就自动被选择。
+      shop.checked = shop.goodsList.every(good => { //使用every的api实现如果全部商品被选择，店铺就自动被选择。
         return good.checked
       })
     },
-    selectShop(shop) {//使此商铺下的所有商品选中或不被选中
+    selectShop(shop) { //使此商铺下的所有商品选中或不被选中
       shop.checked = !shop.checked
       shop.goodsList.forEach(good => {
         good.checked = shop.checked
       })
     },
-    selectAll() {//改变全选状态，触发AllSelected的set。
-        this.AllSelected = !this.AllSelected
+    selectAll() { //改变全选状态，触发AllSelected的set。
+      this.AllSelected = !this.AllSelected
+    },
+    edit(shop, shopIndex) {
+      shop.isEditing = !shop.isEditing
+      shop.editingMsg = shop.isEditing ? '完成' : '编辑' //通过当前shop的isEditing判断显示文字
+      this.cartLists.forEach((item, index) => {
+        if (shopIndex !== index) { //通过v-for传过来的shopIndex和cartLists循环的index判断不在编辑状态的文字
+          // item.isEditing = false
+          item.editingMsg = shop.isEditing ? '' : '编辑'
+        }
+      })
+      this.editingShop = shop.isEditing ? shop : null //需要一个全局变量处理下方的‘删除’和‘结算’状态
     }
   },
   created() {
