@@ -66,6 +66,18 @@ new Vue({
       }
       this.total = total
       return arr
+    },
+    removeGoods() {
+      let arr = []
+      if(this.editingShop) {
+        this.editingShop.goodsList.forEach(good => {
+          if(good.removeChecked) {
+            arr.push(good)
+          }
+        })
+        return arr
+      }
+      return []
     }
   },
   methods: {

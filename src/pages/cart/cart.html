@@ -159,7 +159,7 @@
                 结算 ({{selectedGoods.length}})
               </button>
               <!-- 编辑状态 -->
-              <button href="javascript:;" disabled="disabled" class="j-delete-goods btn font-size-14 btn-red" v-show="editingShop">删除
+              <button href="javascript:;" :disabled="!removeGoods.length" class="j-delete-goods btn font-size-14 btn-red" v-show="editingShop">删除
               </button>
             </div>
           </div>
@@ -167,13 +167,13 @@
       </div>
     </div>
   </div>
-  <div class="footer" style="min-height: 86px;">
+  <!-- <div class="footer" style="min-height: 86px;">
     <div class="copyright">
       <div class="ft-copyright " style="background-image: url(https://img.yzcdn.cn/upload_files/2016/11/15/147918630760182374.png);">
         <a class="yz-logo" href="https://www.youzan.com/?from_source=support_logo">有赞提供技术支持</a>
       </div>
     </div>
-  </div>
+  </div> -->
 </body>
 
 </html>
