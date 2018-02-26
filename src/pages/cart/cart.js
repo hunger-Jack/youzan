@@ -125,6 +125,23 @@ new Vue({
         }
       })
       this.editingShop = shop.isEditing ? shop : null //需要一个全局变量处理下方的‘删除’和‘结算’状态
+    },
+    add(good) {
+      axios.post(url.addCart,{
+        id: good.id,
+        number: 1
+      }).then((res) => {
+        good.number++
+      })
+    },
+    reduce(good) {
+      if(good.number === 1) return
+      axios.post(url.removeCart,{
+        id: good.id,
+        number: 1
+      }).then((res) => {
+        good.number--
+      })
     }
   },
   created() {
