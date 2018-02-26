@@ -12,7 +12,9 @@ new Vue({
     return {
       cartLists: null,
       total: 0,
-      editingShop: null //判断是否在编辑状态下，储存处于编辑状态下的商铺shop信息
+      editingShop: null, //判断是否在编辑状态下，储存处于编辑状态下的商铺shop信息
+      removePopout: false,
+      removeData: null
     }
   },
   computed: {
@@ -126,7 +128,7 @@ new Vue({
       })
       this.editingShop = shop.isEditing ? shop : null //需要一个全局变量处理下方的‘删除’和‘结算’状态
     },
-    add(good) {
+    add(good) {//编辑状态下商品数量增加
       axios.post(url.addCart,{
         id: good.id,
         number: 1
@@ -134,13 +136,41 @@ new Vue({
         good.number++
       })
     },
-    reduce(good) {
+    reduce(good) {//编辑状态下商品数量减少
       if(good.number === 1) return
       axios.post(url.removeCart,{
         id: good.id,
         number: 1
       }).then((res) => {
         good.number--
+      })
+    },
+    remove(good,goodIndex,shop,shopIndex) { //单件商品的的删除
+      this.removePopout = true
+      this.removeData = {good,goodIndex,shop,shopIndex} //对象结构赋值全局储存数据
+    },
+    removeConfirm() {//删除确认
+      let {good,goodIndex,shop,shopIndex} = this.removeData
+      axios.post(url.removeCart,{
+        id: good.id
+      }).then((res) => {
+        shop.goodsList.splice(goodIndex,1)
+        if(!shop.goodsList.length) {
+          this.cartLists.splice(shopIndex,1)
+          this.statusRecover()
+        }
+        this.removePopout = false
+      })
+    },
+    statusRecover() {//删除一个商铺时候状态还原
+      this.editingShop = null
+      this.cartLists.forEach(shop=>{
+        shop.editingMsg = '编辑'
+        shop.isEditing = false
+        shop.goodsList.forEach(good=>{
+          good.editingMsg = '编辑'
+          good.isEditing = false
+        })
       })
     }
   },

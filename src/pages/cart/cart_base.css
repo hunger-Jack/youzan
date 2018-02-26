@@ -275,9 +275,9 @@ dd {
 hr {
   margin: 10px 0;
   border: 0;
-  -webkit-border-image: url("/v2/image/wap/border-line.png") 2 stretch;
-  -moz-border-image: url("/v2/image/wap/border-line.png") 2 stretch;
-  border-image: url("/v2/image/wap/border-line.png") 2 stretch;
+  -webkit-border-image: url("https://b.yzcdn.cn/v2/image/wap/border-line.png") 2 stretch;
+  -moz-border-image: url("https://b.yzcdn.cn/v2/image/wap/border-line.png") 2 stretch;
+  border-image: url("https://b.yzcdn.cn/v2/image/wap/border-line.png") 2 stretch;
   border-top: 2px solid #e5e5e5
 }
 
@@ -403,7 +403,7 @@ hr.left-10 {
 }
 
 .loading {
-  background-image: url("/v2/image/loader.gif") !important;
+  background-image: url("https://b.yzcdn.cn/v2/image/loader.gif") !important;
   background-repeat: no-repeat !important;
   background-position: center center !important;
   background-size: 16px 16px
@@ -413,13 +413,13 @@ hr.left-10 {
 only screen and (min--moz-device-pixel-ratio: 1.5),
 only screen and (min-device-pixel-ratio: 1.5) {
   .loading {
-    background-image: url("/v2/image/loader@2x.gif") !important
+    background-image: url("https://b.yzcdn.cn/v2/image/loader@2x.gif") !important
   }
 }
 
 .with-bs-top,
 .with-bs-bottom {
-  background: url("/v2/image/wap/bottom_line.png") left top no-repeat;
+  background: url("https://b.yzcdn.cn/v2/image/wap/bottom_line.png") left top no-repeat;
   background-size: 100% 1px
 }
 
@@ -480,9 +480,9 @@ only screen and (min-device-pixel-ratio: 1.5) {
 }
 
 .copyright .ft-links ~ .ft-copyright {
-  -webkit-border-image: url("/v2/image/wap/border-line.png") 2 stretch;
-  -moz-border-image: url("/v2/image/wap/border-line.png") 2 stretch;
-  border-image: url("/v2/image/wap/border-line.png") 2 stretch;
+  -webkit-border-image: url("https://b.yzcdn.cn/v2/image/wap/border-line.png") 2 stretch;
+  -moz-border-image: url("https://b.yzcdn.cn/v2/image/wap/border-line.png") 2 stretch;
+  border-image: url("https://b.yzcdn.cn/v2/image/wap/border-line.png") 2 stretch;
   border-top: 2px solid #e5e5e5
 }
 
