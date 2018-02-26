@@ -34,12 +34,15 @@ new Vue({
         })
       }
     },
-    allRemoveSelected: {////使用计算属性实现最下方的全选功能。编辑状态下的全选
+    allRemoveSelected: { ////使用计算属性实现最下方的全选功能。编辑状态下的全选
       set(newVal) {
-        this.editingShop.removeChecked = newVal
-        this.editingShop.goodsList.forEach(good => {
-          good.removeChecked = newVal
-        })
+        if (this.editingShop) {
+          this.editingShop.removeChecked = newVal
+          this.editingShop.goodsList.forEach(good => {
+            good.removeChecked = newVal
+          })
+        }
+        return false
       },
       get() {
         if (this.editingShop) {
@@ -66,7 +69,7 @@ new Vue({
     }
   },
   methods: {
-    getLists() {//获取购物车数据
+    getLists() { //获取购物车数据
       axios.post(url.cartList).then((res) => { //由于vue响应式原理，在这里必须先初始化处理数据，后赋值。
         let lists = res.data.cartList
         lists.forEach(shop => {
@@ -82,10 +85,10 @@ new Vue({
         this.cartLists = lists //这样的话就不要Object.assign()了
       })
     },
-    selectGood(shop, good) {//使用every的api实现如果全部商品被选择，店铺就自动被选择。
+    selectGood(shop, good) { //使用every的api实现如果全部商品被选择，店铺就自动被选择。
       let selectOrEdit = this.editingShop ? 'removeChecked' : 'checked' //使用一个变量来缓存【编辑】或【完成】状态，使用三元运算符判断
       good[selectOrEdit] = !good[selectOrEdit]
-      shop[selectOrEdit] = shop.goodsList.every(good => { 
+      shop[selectOrEdit] = shop.goodsList.every(good => {
         return good[selectOrEdit]
       })
     },
