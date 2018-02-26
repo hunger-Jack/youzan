@@ -12,11 +12,11 @@ new Vue({
     return {
       cartLists: null,
       total: 0,
-      editingShop: null
+      editingShop: null //判断是否在编辑状态下，储存处于编辑状态下的商铺shop信息
     }
   },
   computed: {
-    AllSelected: { //使用计算属性实现最下方的全选功能
+    allSelected: { //使用计算属性实现最下方的全选功能。正常状态下的全选
       get() {
         if (this.cartLists && this.cartLists.length) {
           return this.cartLists.every(shop => { //使用every的api实现，如果所有的商品被选中，左下方的全选自动选中，如果有一个商品没有选中，全选就不选中。
@@ -32,6 +32,20 @@ new Vue({
             good.checked = newVal
           })
         })
+      }
+    },
+    allRemoveSelected: {////使用计算属性实现最下方的全选功能。编辑状态下的全选
+      set(newVal) {
+        this.editingShop.removeChecked = newVal
+        this.editingShop.goodsList.forEach(good => {
+          good.removeChecked = newVal
+        })
+      },
+      get() {
+        if (this.editingShop) {
+          return this.editingShop.removeChecked
+        }
+        return false
       }
     },
     selectedGoods() { //结算状态和对应操作，根据选中商品长度计算。
@@ -52,34 +66,39 @@ new Vue({
     }
   },
   methods: {
-    getLists() {
+    getLists() {//获取购物车数据
       axios.post(url.cartList).then((res) => { //由于vue响应式原理，在这里必须先初始化处理数据，后赋值。
         let lists = res.data.cartList
         lists.forEach(shop => {
           shop.checked = true
           shop.editingMsg = '编辑' //文字信息‘编辑’或者'完成'，默认给‘编辑’
           shop.isEditing = false //是否在编辑状态，默认否
+          shop.removeChecked = false //在编辑状态下是否被选中
           shop.goodsList.forEach(good => {
             good.checked = true
+            good.removeChecked = false //在编辑状态下是否被选中
           })
         });
         this.cartLists = lists //这样的话就不要Object.assign()了
       })
     },
-    selectGood(shop, good) {
-      good.checked = !good.checked
-      shop.checked = shop.goodsList.every(good => { //使用every的api实现如果全部商品被选择，店铺就自动被选择。
-        return good.checked
+    selectGood(shop, good) {//使用every的api实现如果全部商品被选择，店铺就自动被选择。
+      let selectOrEdit = this.editingShop ? 'removeChecked' : 'checked' //使用一个变量来缓存【编辑】或【完成】状态，使用三元运算符判断
+      good[selectOrEdit] = !good[selectOrEdit]
+      shop[selectOrEdit] = shop.goodsList.every(good => { 
+        return good[selectOrEdit]
       })
     },
     selectShop(shop) { //使此商铺下的所有商品选中或不被选中
-      shop.checked = !shop.checked
+      let selectOrEdit = this.editingShop ? 'removeChecked' : 'checked' //使用一个变量来缓存【编辑】或【完成】状态，使用三元运算符判断
+      shop[selectOrEdit] = !shop[selectOrEdit]
       shop.goodsList.forEach(good => {
-        good.checked = shop.checked
+        good[selectOrEdit] = shop[selectOrEdit]
       })
     },
-    selectAll() { //改变全选状态，触发AllSelected的set。
-      this.AllSelected = !this.AllSelected
+    selectAll() { //改变全选状态，触发allSelected的set。
+      let selectOrEdit = this.editingShop ? 'allRemoveSelected' : 'allSelected' //使用一个变量来缓存【编辑】或【完成】状态，使用三元运算符判断
+      this[selectOrEdit] = !this[selectOrEdit]
     },
     edit(shop, shopIndex) {
       shop.isEditing = !shop.isEditing
