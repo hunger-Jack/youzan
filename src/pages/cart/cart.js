@@ -67,7 +67,7 @@ new Vue({
       this.total = total
       return arr
     },
-    removeGoods() {
+    removeGoods() {//被选中删除商品列表
       let arr = []
       if(this.editingShop) {
         this.editingShop.goodsList.forEach(good => {
