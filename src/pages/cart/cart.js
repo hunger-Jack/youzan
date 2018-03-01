@@ -5,6 +5,8 @@ import Vue from 'vue'
 import axios from 'axios'
 import mixin from 'js/mixin.js'
 import url from 'js/api.js'
+import Velocity from 'velocity-animate'
+import Hammer from 'hammerjs'
 
 new Vue({
   el: '.container',
@@ -216,6 +218,26 @@ new Vue({
           good.isEditing = false
         })
       })
+    },
+    start(e,good) {
+      good.clientXOfStart = e.changedTouches[0].clientX
+    },
+    end(e,good,goodIndex,shopIndex) {
+      let clientXOfEnd = e.changedTouches[0].clientX
+      let left  = '0px'
+      if(good.clientXOfStart - clientXOfEnd > 100) {
+        left = '-60px'
+      } else {
+        left = '0px'
+      }
+      Velocity(this.$refs[`goods-${shopIndex}-${goodIndex}`],{
+        left,
+      },0.5)
+      // var square = document.querySelector('.block-item');
+      // var hammer = new Hammer(square);
+      // hammer.on('pan', function(e) {
+      //   console.log(e.changedPointers[0].clientX);
+      // });
     }
   },
   created() {

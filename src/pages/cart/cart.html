@@ -42,13 +42,17 @@
               <!---->
               <div>
                 <ul class="js-list block block-list block-list-cart border-0">
-                  <li class="block-item block-item-cart" v-for="(good,goodIndex) in shop.goodsList" :class="{editing:shop.isEditing}">
+                  <li class="block-item block-item-cart" v-for="(good,goodIndex) in shop.goodsList" :class="{editing:shop.isEditing}"
+                    @touchstart="start($event,good)"
+                    @touchend="end($event,good,goodIndex,shopIndex)"
+                    :ref="'goods-'+shopIndex+'-'+goodIndex" 
+                  >
                     <div>
                       <div class="check-container">
                         <span class="check" :class="{checked:editingShop?good.removeChecked:good.checked}" @click="selectGood(shop,good)"></span>
                       </div>
                       <div class="name-card clearfix">
-                        <a href="https://h5.youzan.com/v2/showcase/goods?alias=2oivacpjh2ex0" class="thumb js-goods-link">
+                        <a href="javascript:;" class="thumb js-goods-link">
                           <img data-src="https://img.yzcdn.cn/upload_files/2017/07/04/Fqp4EItsHaclmGQPBoMkR1qKmKGi.jpg!200x200.jpg"
                             class="js-lazy" :src="good.image">
                           <!---->
