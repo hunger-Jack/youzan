@@ -13,8 +13,10 @@ new Vue({
       cartLists: null,
       total: 0,
       editingShop: null, //判断是否在编辑状态下，储存处于编辑状态下的商铺shop信息
-      removePopout: false,
-      removeData: null
+      editingShopIndex: -1,
+      removePopup: false,
+      removeData: null,
+      removeMsg: ''
     }
   },
   computed: {
@@ -69,11 +71,11 @@ new Vue({
       this.total = total
       return arr
     },
-    removeGoods() {//被选中删除商品列表
+    removeGoods() { //被选中删除商品列表
       let arr = []
-      if(this.editingShop) {
+      if (this.editingShop) {
         this.editingShop.goodsList.forEach(good => {
-          if(good.removeChecked) {
+          if (good.removeChecked) {
             arr.push(good)
           }
         })
@@ -127,47 +129,89 @@ new Vue({
         }
       })
       this.editingShop = shop.isEditing ? shop : null //需要一个全局变量处理下方的‘删除’和‘结算’状态
+      this.editingShopIndex = shop.isEditing ? shopIndex : -1
     },
-    add(good) {//编辑状态下商品数量增加
-      axios.post(url.addCart,{
+    add(good) { //编辑状态下商品数量增加
+      axios.post(url.addCart, {
         id: good.id,
         number: 1
       }).then((res) => {
         good.number++
       })
     },
-    reduce(good) {//编辑状态下商品数量减少
-      if(good.number === 1) return
-      axios.post(url.removeCart,{
+    reduce(good) { //编辑状态下商品数量减少
+      if (good.number === 1) return
+      axios.post(url.removeCart, {
         id: good.id,
         number: 1
       }).then((res) => {
         good.number--
       })
     },
-    remove(good,goodIndex,shop,shopIndex) { //单件商品的的删除
-      this.removePopout = true
-      this.removeData = {good,goodIndex,shop,shopIndex} //对象结构赋值全局储存数据
+    remove(good, goodIndex, shop, shopIndex) { //单件商品的的删除
+      this.removePopup = true
+      this.removeData = {
+        good,
+        goodIndex,
+        shop,
+        shopIndex
+      } //对象结构赋值全局储存数据
+      this.removeMsg = '确认要删除该商品吗？'
     },
-    removeConfirm() {//删除确认
-      let {good,goodIndex,shop,shopIndex} = this.removeData
-      axios.post(url.removeCart,{
-        id: good.id
-      }).then((res) => {
-        shop.goodsList.splice(goodIndex,1)
-        if(!shop.goodsList.length) {
-          this.cartLists.splice(shopIndex,1)
-          this.statusRecover()
-        }
-        this.removePopout = false
-      })
+    removeConfirm() { //删除确认
+      if (this.removeMsg === '确认要删除该商品吗？') { //通过removeMsg来判断是单个删除还是选择删除
+        let {
+          good,
+          goodIndex,
+          shop,
+          shopIndex
+        } = this.removeData
+        axios.post(url.removeCart, {
+          id: good.id
+        }).then((res) => {
+          shop.goodsList.splice(goodIndex, 1)
+          if (!shop.goodsList.length) {
+            this.cartLists.splice(shopIndex, 1)
+            this.statusRecover()
+          }
+          this.removePopup = false
+        })
+      } else {
+        let ids = []
+        this.removeGoods.forEach(good => {
+          ids.push(good.id)
+        })
+        axios.post(url.mRemoveCart, {
+          ids
+        }).then((res) => {
+          let arr = []
+          this.editingShop.goodsList.forEach(good => {
+            let idx = this.removeGoods.findIndex(item => item.id === good.id) //使用findIndexde api
+            if (idx === -1) { //没有勾选的商品放在一个新数组
+              arr.push(good)
+            }
+          })
+          if (arr.length) { //如果还有剩余没有被勾选商品，把正在编辑店铺的商品重新赋值为arr，由于响应式，cartLists也会改变。
+            this.editingShop.goodsList = arr
+          } else { // 如果arr为空，就证明全部商品被勾选，就要把这个正在编辑的店铺删除，然后还原状态。
+            this.lists.splice(this.editingShopIndex, 1)
+            this.removeShop()
+          }
+          this.removePopup = false
+        })
+      }
     },
-    statusRecover() {//删除一个商铺时候状态还原
+    removeSelected() { //右下角删除所选商品
+      this.removeMsg = `确定将所选 ${this.removeGoods.length} 个商品删除？`
+      this.removePopup = true
+    },
+    statusRecover() { //删除一个商铺时候状态还原
       this.editingShop = null
-      this.cartLists.forEach(shop=>{
+      this.editingShopIndex = -1
+      this.cartLists.forEach(shop => {
         shop.editingMsg = '编辑'
         shop.isEditing = false
-        shop.goodsList.forEach(good=>{
+        shop.goodsList.forEach(good => {
           good.editingMsg = '编辑'
           good.isEditing = false
         })
