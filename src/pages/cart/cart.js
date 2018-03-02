@@ -232,7 +232,7 @@ new Vue({
       }
       Velocity(this.$refs[`goods-${shopIndex}-${goodIndex}`],{
         left,
-      },0.5)
+      })
       // var square = document.querySelector('.block-item');
       // var hammer = new Hammer(square);
       // hammer.on('pan', function(e) {
