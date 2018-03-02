@@ -77,7 +77,7 @@
                             <!---->
                             <div class="quantity">
                               <button type="button" class="minus" :class="{disabled:good.number===1}"></button>
-                              <input type="text" pattern="[0-9]*" class="txt" v-model="good.number">
+                              <input type="number" onkeypress='return (/[\d]/.test(String.fromCharCode(event.keyCode)))' pattern="[0-9]*" class="txt" v-model="good.number">
                               <button type="button" class="plus "></button>
                               <div class="response-area response-area-minus" @click="reduce(good)"></div>
                               <div class="response-area response-area-plus"  @click="add(good)"></div>

@@ -2,12 +2,9 @@ import './cart_base.css'
 import './cart_trade.css'
 import './cart.css'
 import Vue from 'vue'
-import axios from 'axios'
 import mixin from 'js/mixin.js'
-import url from 'js/api.js'
 import Velocity from 'velocity-animate'
-import Hammer from 'hammerjs'
-
+import Cart from 'js/cartService.js'
 new Vue({
   el: '.container',
   data() {
@@ -88,7 +85,7 @@ new Vue({
   },
   methods: {
     getLists() { //获取购物车数据
-      axios.post(url.cartList).then((res) => { //由于vue响应式原理，在这里必须先初始化处理数据，后赋值。
+      Cart.getLists().then((res) => { //由于vue响应式原理，在这里必须先初始化处理数据，后赋值。
         let lists = res.data.cartList
         lists.forEach(shop => {
           shop.checked = true
@@ -134,19 +131,13 @@ new Vue({
       this.editingShopIndex = shop.isEditing ? shopIndex : -1
     },
     add(good) { //编辑状态下商品数量增加
-      axios.post(url.addCart, {
-        id: good.id,
-        number: 1
-      }).then((res) => {
+      Cart.add(good.id).then((res) => {
         good.number++
       })
     },
     reduce(good) { //编辑状态下商品数量减少
       if (good.number === 1) return
-      axios.post(url.removeCart, {
-        id: good.id,
-        number: 1
-      }).then((res) => {
+      Cart.reduce(good.id).then((res) => {
         good.number--
       })
     },
@@ -168,9 +159,7 @@ new Vue({
           shop,
           shopIndex
         } = this.removeData
-        axios.post(url.removeCart, {
-          id: good.id
-        }).then((res) => {
+        Cart.removeCart(good.id).then((res) => {
           shop.goodsList.splice(goodIndex, 1)
           if (!shop.goodsList.length) {
             this.cartLists.splice(shopIndex, 1)
@@ -179,13 +168,7 @@ new Vue({
           this.removePopup = false
         })
       } else {
-        let ids = []
-        this.removeGoods.forEach(good => {
-          ids.push(good.id)
-        })
-        axios.post(url.mRemoveCart, {
-          ids
-        }).then((res) => {
+        Cart.mRemoveCart(this.removeGoods).then((res) => { //这里只传了一个删除列表，id在cartService里面处理
           let arr = []
           this.editingShop.goodsList.forEach(good => {
             let idx = this.removeGoods.findIndex(item => item.id === good.id) //使用findIndexde api
@@ -196,8 +179,8 @@ new Vue({
           if (arr.length) { //如果还有剩余没有被勾选商品，把正在编辑店铺的商品重新赋值为arr，由于响应式，cartLists也会改变。
             this.editingShop.goodsList = arr
           } else { // 如果arr为空，就证明全部商品被勾选，就要把这个正在编辑的店铺删除，然后还原状态。
-            this.lists.splice(this.editingShopIndex, 1)
-            this.removeShop()
+            this.cartLists.splice(this.editingShopIndex, 1)
+            this.statusRecover()
           }
           this.removePopup = false
         })
@@ -219,18 +202,18 @@ new Vue({
         })
       })
     },
-    start(e,good) {
+    start(e, good) {
       good.clientXOfStart = e.changedTouches[0].clientX
     },
-    end(e,good,goodIndex,shopIndex) {
+    end(e, good, goodIndex, shopIndex) {
       let clientXOfEnd = e.changedTouches[0].clientX
-      let left  = '0px'
-      if(good.clientXOfStart - clientXOfEnd > 100) {
+      let left = '0px'
+      if (good.clientXOfStart - clientXOfEnd > 100) {
         left = '-60px'
       } else {
         left = '0px'
       }
-      Velocity(this.$refs[`goods-${shopIndex}-${goodIndex}`],{
+      Velocity(this.$refs[`goods-${shopIndex}-${goodIndex}`], {
         left,
       })
       // var square = document.querySelector('.block-item');
