@@ -141,6 +141,11 @@ new Vue({
         good.number--
       })
     },
+    update(good,number) {
+      Cart.update(good.id,number).then(res=>{
+        good.number = number
+      })
+    },
     remove(good, goodIndex, shop, shopIndex) { //单件商品的的删除
       this.removePopup = true
       this.removeData = {

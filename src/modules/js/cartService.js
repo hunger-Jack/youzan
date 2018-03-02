@@ -39,6 +39,13 @@ class Cart {
             ids
         })
     }
+
+    static update(id,number) {
+        return fetch(url.updateCart,{
+            id,
+            number
+        })
+    }
 }
 
 export default Cart
