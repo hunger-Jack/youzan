@@ -35,7 +35,7 @@
       </div>
     </div>
     <div class="block section js-save block-control-btn">
-      <div class="block-item c-blue center" @click="add(instance.id)">保存</div>
+      <div class="block-item c-blue center" @click="add">保存</div>
     </div>
     <div class="block section js-delete  block-control-btn" v-if="type === 'edit'">
       <div class="block-item c-red center" @click="remove(instance.id)">删除</div>
@@ -63,7 +63,9 @@
         instance: this.$route.query.instance,
         name: '',
         tel: '',
-        address: ''
+        address: '',
+        isFirst: true,
+        id: ''
       }
     },
     watch: {
@@ -78,8 +80,11 @@
           return item.value === parseInt(val)
         })
         this.cityData = this.provinceData[index].children
-        this.cityValue = -1
-        this.districtValue = -1
+        if (!this.isFirst) { // 判断是不是第一次进入form页面
+          this.cityValue = -1
+          this.districtValue = -1
+        }
+        this.isFirst = false
       },
       cityValue(val) {
         if (parseInt(val) === -1) {
@@ -95,7 +100,6 @@
       }
     },
     created() {
-      console.log(this.instance.id)
       if (this.type === 'edit') {
         this.provinceValue = parseInt(this.instance.provinceValue)
         this.cityValue = parseInt(this.instance.cityValue)
@@ -103,17 +107,21 @@
         this.name = this.instance.name
         this.tel = this.instance.tel
         this.address = this.instance.address
+        this.id = this.instance.id
+      } else {
+        console.log(1111)
       }
     },
     methods: {
-      add(id) {
+      add() {
         let {
           name,
           address,
           provinceValue,
           cityValue,
           districtValue,
-          tel
+          tel,
+          id
         } = this
         let data = {
           name,
@@ -121,14 +129,15 @@
           provinceValue,
           cityValue,
           districtValue,
-          tel
+          tel,
+          id
         }
-        if (this.type === 'edit') {//要判断一下是编辑状态还是新增状态，做出对应的请求
-          Address.update(id).then(() => {
+        if (this.type === 'edit') { //要判断一下是编辑状态还是新增状态，做出对应的请求
+          Address.update(data.id).then(() => {
             this.$router.go(-1)
           })
         } else {
-          Address.add(data).then(()=>{
+          Address.add(data).then(() => {
             this.$router.go(-1)
           })
         }
