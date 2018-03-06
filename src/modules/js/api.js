@@ -12,7 +12,12 @@ let url = {
     updateCart: '/cart/update',
     reduceCart: '/cart/reduce',
     removeCart: '/cart/remove',
-    mRemoveCart: '/cart/mremove'
+    mRemoveCart: '/cart/mremove',
+    addressList: '/address/list',
+    addressRemove: '/address/remove',
+    addressAdd: '/address/add',
+    addressUpdate: '/address/update',
+    addressDefault: '/address/setDefault'
 }
 
 let host = 'http://rapapi.org/mockjsdata/24170'

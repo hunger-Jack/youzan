@@ -30,6 +30,7 @@ let routes = [{
     path: 'all',
     component: All
   }, {
+    name: 'form',
     path: 'form',
     component: Form
   }]
