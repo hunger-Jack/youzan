@@ -68,7 +68,18 @@
         id: ''
       }
     },
+    computed: {
+      addressLists() {
+        return this.$store.state.addressLists
+      }
+    },
     watch: {
+      addressLists: {
+        handler() {
+          this.$router.go(-1)
+        },
+        deep:true
+      },
       provinceValue(val) {
         if (parseInt(val) === -1) {
           this.provinceValue = -1
@@ -137,15 +148,13 @@
             this.$router.go(-1)
           })
         } else {
-          Address.add(data).then(() => {
-            this.$router.go(-1)
-          })
+          this.$store.dispatch('addAction',data)
         }
 
       },
       setDefault(id) {
         Address.setDefault(id).then(() => {
-          this.$router.go(-1)
+          this.$router.push({name:'all'})
         })
       },
       remove(id) {
