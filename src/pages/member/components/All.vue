@@ -35,10 +35,18 @@
       }
     },
     created() {
-      if(!this.addressLists) {//只在第一次的时候获取数据
+      if (!this.addressLists) { //只在第一次的时候获取数据
         this.$store.dispatch('getListsAction')
       }
-      
+      if (this.addressLists) {
+        let isDeleteDefault = this.addressLists.every(item => {
+          return item.isDefault === false
+        })
+        if (isDeleteDefault) { //如果把默认地址删除了，就默认第一个为默认地址
+          this.addressLists[0].isDefault = true
+        }
+      }
+
     }
   }
 
