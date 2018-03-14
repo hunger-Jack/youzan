@@ -4,7 +4,7 @@
       <a class="block-item js-address-item address-item " @click="toEdit(index)" v-for="(list,index) in addressLists" :key="list.id"
         :class="{'address-item-default': list.isDefault}">
         <div class="address-title">{{list.name}} {{list.tel}}</div>
-        <p>{{list.provinceName}}{{list.cityName}}{{list.districtName}}</p>
+        <p>{{list.provinceName}}{{list.cityName}}{{list.districtName}}{{list.address}}</p>
       </a>
     </div>
     <div class="block stick-bottom-row center">

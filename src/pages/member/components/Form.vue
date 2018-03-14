@@ -45,7 +45,6 @@
     </div>
   </div>
 </template>
-
 <script>
   import addressData from '../address.json'
   import Address from 'js/addressService.js'
@@ -65,21 +64,90 @@
         tel: '',
         address: '',
         isFirst: true,
-        id: ''
+        id: '',
+        isDefault: false,
+        provinceName: '',
+        cityName: '',
+        districtName: ''
       }
     },
     computed: {
       addressLists() {
-        return this.$store.state.addressLists
+        return JSON.parse(JSON.stringify(this.$store.state.addressLists))
+      }
+    },
+    created() {
+      if (this.type === 'edit') {
+        this.provinceValue = parseInt(this.instance.provinceValue)
+        this.cityValue = parseInt(this.instance.cityValue)
+        this.districtValue = parseInt(this.instance.districtValue)
+        this.name = this.instance.name
+        this.tel = this.instance.tel
+        this.address = this.instance.address
+        this.id = this.instance.id
+        this.isDefault = this.instance.isDefault
+        this.provinceName = this.instance.provinceName
+        this.cityName = this.instance.cityName
+        this.districtName = this.instance.districtName
+      } else {
+        this.id = Math.floor((Math.random()) * 100000) //新增状态给一个随机id
+      }
+    },
+    methods: {
+      setAddressName(data, addressName, val) { //封装函数，增加地址时地区的设置
+        data.forEach((item) => {
+          if (item.value === val) {
+            this[addressName] = item.label
+          }
+        })
+      },
+      add() {
+        let {
+          name,
+          address,
+          provinceValue,
+          cityValue,
+          districtValue,
+          tel,
+          id,
+          isDefault,
+          provinceName,
+          cityName,
+          districtName
+        } = this
+        let data = {
+          name,
+          address,
+          provinceValue,
+          cityValue,
+          districtValue,
+          tel,
+          id,
+          isDefault,
+          provinceName,
+          cityName,
+          districtName
+        }
+        if (this.type === 'edit') { //要判断一下是编辑状态还是新增状态，做出对应的请求
+          let id = data.id
+          this.$store.dispatch('updateAction', {
+            data,
+            id
+          })
+        } else {
+          this.$store.dispatch('addAction', data)
+        }
+      },
+      setDefault(id) {
+        this.$store.dispatch('setDefaultAction', id)
+      },
+      remove(id) {
+        if (window.confirm('确认要删除此地址？')) {
+          this.$store.dispatch('removeAction', id)
+        }
       }
     },
     watch: {
-      addressLists: {
-        handler() {
-          this.$router.go(-1)
-        },
-        deep:true
-      },
       provinceValue(val) {
         if (parseInt(val) === -1) {
           this.provinceValue = -1
@@ -95,6 +163,7 @@
           this.cityValue = -1
           this.districtValue = -1
         }
+        this.setAddressName(this.provinceData, 'provinceName', val)
         this.isFirst = false
       },
       cityValue(val) {
@@ -106,72 +175,17 @@
         let index = this.cityData.findIndex(item => {
           return item.value === val
         })
+        this.setAddressName(this.cityData, 'cityName', val)
         this.districtData = this.cityData[index].children
         this.districtValue = -1
+      },
+      districtValue(val) {
+        this.setAddressName(this.districtData, 'districtName', val)
       }
     },
-    created() {
-      if (this.type === 'edit') {
-        this.provinceValue = parseInt(this.instance.provinceValue)
-        this.cityValue = parseInt(this.instance.cityValue)
-        this.districtValue = parseInt(this.instance.districtValue)
-        this.name = this.instance.name
-        this.tel = this.instance.tel
-        this.address = this.instance.address
-        this.id = this.instance.id
-      } else {
-        console.log(1111)
-      }
-    },
-    methods: {
-      add() {
-        let {
-          name,
-          address,
-          provinceValue,
-          cityValue,
-          districtValue,
-          tel,
-          id
-        } = this
-        let data = {
-          name,
-          address,
-          provinceValue,
-          cityValue,
-          districtValue,
-          tel,
-          id
-        }
-        if (this.type === 'edit') { //要判断一下是编辑状态还是新增状态，做出对应的请求
-          Address.update(data.id).then(() => {
-            this.$router.go(-1)
-          })
-        } else {
-          this.$store.dispatch('addAction',data)
-        }
-
-      },
-      setDefault(id) {
-        Address.setDefault(id).then(() => {
-          this.$router.push({name:'all'})
-        })
-      },
-      remove(id) {
-        if (window.confirm('确认要删除此地址？')) {
-          Address.remove(id).then(() => {
-            this.$router.go(-1)
-          })
-        }
-
-      }
-    }
   }
-
 </script>
-
 <style scoped>
   @import url('./address_base.css');
   @import url('./address.css');
-
 </style>
